@@ -1,0 +1,34 @@
+# Connect to MySQL
+conn = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='jennie',
+    database='library_data',
+    allow_local_infile=True
+)
+
+cursor = conn.cursor()
+
+# Enable local infile
+cursor.execute("SET GLOBAL local_infile = 1")
+
+# Run the LOAD DATA command
+sql = """
+LOAD DATA LOCAL INFILE 'C:/ProgramData/MySQL/MySQL Server 9.5/uploads/SFPL_DataSF_library.csv'
+INTO TABLE SFPL_DataSF_library
+FIELDS TERMINATED BY ',' 
+OPTIONALLY ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(patron_type_code, patron_type_definition, checkout_total, renewal_total,
+ age_range, home_library_code, home_library_definition,
+ circulation_active_month, circulation_active_year,
+ notification_medium_code, notification_code_definition,
+ provided_email_address, within_sf_county, year_patron_registered);
+"""
+
+cursor.execute(sql)
+conn.commit()
+
+cursor.close()
+conn.close()
