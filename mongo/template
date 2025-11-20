@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patron Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <h1 class="center">{{ patron.patron_type_definition }}'s Profile</h1>
+
+    <div class="profile-container">
+        <h2>Patron Details</h2>
+        <table class="profile-table">
+            
+            <table class="profile-table">
+                <tr><th>Patron ID</th><td>{{ patron.short_id }}</td></tr>
+                <tr><th>Checkout Total</th><td>{{ patron.checkout_total }}</td></tr>
+                <tr><th>Renewal Total</th><td>{{ patron.renewal_total }}</td></tr>
+                <tr><th>Patron Type Code</th><td>{{ patron.patron_type_code }}</td></tr>
+                <tr><th>Patron Type Definition</th><td>{{ patron.patron_type_definition }}</td></tr>
+                <tr><th>Age Range</th><td>{{ patron.age_range }}</td></tr>
+                <tr><th>Age Group</th><td>{{ patron.age_group }}</td></tr>
+                <tr><th>Membership Type</th><td>{{ patron.role_name }}</td></tr>
+                <tr><th>Home Library Code</th><td>{{ patron.home_library_code }}</td></tr>
+                <tr><th>Home Library Definition</th><td>{{ patron.home_library_definition }}</td></tr>
+                <tr><th>Within SF County</th>
+                    <td>{{ 'Yes' if patron.within_sf_county else 'No' }}</td></tr>
+                <tr><th>Notification Medium Code</th><td>{{ patron.notification_medium_code }}</td></tr>
+                <tr><th>Notification Definition</th><td>{{ patron.notification_code_definition }}</td></tr>
+                <tr><th>Circulation Active Month</th><td>{{ patron.circulation_active_month }}</td></tr>
+                <tr><th>Provided Email Address</th>
+                    <td>{{ 'Yes' if patron.provided_email_address else 'No' }}</td>
+                </tr>
+               
+        </table>
+    </div>
+
+    <div class="back-home" style="text-align: center; margin: 20px 0;">
+        <a href="{{ url_for('patron_list', page=1) }}">← Back to Home Page</a>
+    </div>
+
+</body>
+</html>
