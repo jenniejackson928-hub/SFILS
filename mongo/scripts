@@ -1,0 +1,56 @@
+// Renaming "Digital Access Card" patron type to "Digital Access" for consistency
+db.Patron.updateMany(
+  { patron_type_definition: "Digital Access Card" }, 
+  [
+    {
+      $set: {
+        patron_type_definition: "Digital Access"
+      }
+    }
+  ]
+)
+
+// Renaming "Teacher Card" patron type to "Teacher" for consistency
+db.Patron.updateMany(
+  { patron_type_definition: "Teacher Card" },
+  [
+    {
+      $set: {
+        patron_type_definition: "Teacher"
+      }
+    }
+  ]
+)
+
+// Label patrons by membership type
+db.Patron.updateMany({}, [
+  {
+    $set: {
+      role_name: {
+        $switch: {
+          branches: [
+            { case: { $eq: ["$patron_type_code", 0] }, then: "Standard Adult Card" },
+            { case: { $eq: ["$patron_type_code", 1] }, then: "Standard Juvenile Card" },
+            { case: { $eq: ["$patron_type_code", 2] }, then: "Standard Teen Card" },
+            { case: { $eq: ["$patron_type_code", 3] }, then: "Standard Senior Card" },
+            { case: { $eq: ["$patron_type_code", 4] }, then: "Welcome Card" },
+            { case: { $eq: ["$patron_type_code", 5] }, then: "Staff Card" },
+            { case: { $eq: ["$patron_type_code", 10] }, then: "Visitor Card" },
+            { case: { $eq: ["$patron_type_code", 11] }, then: "Business Card" },
+            { case: { $eq: ["$patron_type_code", 12] }, then: "Mail Service Card" },
+            { case: { $eq: ["$patron_type_code", 15] }, then: "Educator Card" },
+            { case: { $eq: ["$patron_type_code", 16] }, then: "Digital Access Card" },
+            { case: { $eq: ["$patron_type_code", 17] }, then: "Bibliocommons Card" },
+            { case: { $eq: ["$patron_type_code", 55] }, then: "Alumni Staff Card" },
+            { case: { $eq: ["$patron_type_code", 100] }, then: "Remote Adult Card" },
+            { case: { $eq: ["$patron_type_code", 101] }, then: "Remote Juvenile Card" },
+            { case: { $eq: ["$patron_type_code", 102] }, then: "Remote Teen Card" },
+            { case: { $eq: ["$patron_type_code", 103] }, then: "Remote Senior Card" },
+            { case: { $eq: ["$patron_type_code", 104] }, then: "Remote Welcome Card" }
+          ],
+          default: "Unknown Card"
+        }
+      }
+    }
+  }
+])
