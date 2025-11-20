@@ -1,0 +1,75 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1.center, .profile-container {
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+.tags select {
+    width: 200px;
+    margin: 10px;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a {
+    margin: 0 10px;
+}
+
+.search-form input {
+    padding: 5px;
+    font-size: 16px;
+}
+
+a {
+    color: #007BFF;         
+    text-decoration: none;    
+}
+
+
+a:hover {
+    text-decoration: underline; 
+    color: #0056b3;          
+}
+
+
+a:visited {
+    color: #007BFF;          
+}
+
+a:active {
+    color: #0056b3;
+}
+
+.filters {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.filters form {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
