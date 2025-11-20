@@ -1,0 +1,55 @@
+// Total checkouts based on membership type
+db.Patron.aggregate([
+  {
+    $group: {
+      _id: "$role_name",
+      total_checkouts: { $sum: "$checkout_total" },
+      total_renewals: { $sum: "$renewal_total" }
+    }
+  },
+  { $sort: { total_checkouts: -1 } }
+])
+
+// Total checkouts based on renewals
+db.Patron.aggregate([
+  {
+    $group: {
+      _id: "$role_name",
+      total_checkouts: { $sum: "$checkout_total" },
+      total_renewals: { $sum: "$renewal_total" }
+    }
+  },
+  { $sort: { total_renewals: -1 } }
+])
+
+// Top 10 Library users based on checkout totals 
+db.Patron.aggregate([
+  { $sort: { checkout_total: -1 } }, 
+  { $limit: 10 },                       
+  { $project: {                         
+      _id: 1,
+      patron_type_code: 1,
+      patron_type_definition: 1,
+      checkout_total: 1,
+      renewal_total: 1,
+      age_range: 1,
+      home_library_code: 1,
+      home_library_definition: 1
+  }}
+])
+
+// Top 10 library users based on renewal totals
+db.Patron.aggregate([
+  { $sort: { renewal_total: -1 } }, 
+  { $limit: 10 },                       
+  { $project: {                         
+      _id: 1,
+      patron_type_code: 1,
+      patron_type_definition: 1,
+      checkout_total: 1,
+      renewal_total: 1,
+      age_range: 1,
+      home_library_code: 1,
+      home_library_definition: 1
+  }}
+])
