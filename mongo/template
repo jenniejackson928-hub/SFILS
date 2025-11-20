@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patron List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<h1 class="center">Library Patron List</h1>
+  
+<!-- Patron ID Search -->
+<div class="filters" style="text-align:center; margin:20px 0;">
+    <form method="get" action="{{ url_for('patron_list') }}">
+        <input type="text" name="patron_id" placeholder="Search Patron ID..." value="{{ patron_id_search }}">
+        <button type="submit" class="filter-button">Search</button>
+        <button type="button" class="filter-button" onclick="window.location='{{ url_for('patron_list') }}'">Clear</button>
+    </form>
+</div>
+
+<!-- Filters -->
+<div class="filters">
+    <form method="get" action="{{ url_for('patron_list') }}">
+        <!-- Age Group -->
+        <label>Age Group</label>
+        <select name="age_group" class="filter-select">
+            <option value="">-- Select Age Group --</option>
+            {% for age_group in age_groups %}
+                <option value="{{ age_group }}" {% if selected_age_group == age_group %}selected{% endif %}>
+                    {{ age_group }}
+                </option>
+            {% endfor %}
+        </select>
+      
+        <!-- Membership Card Type -->
+        <label>Membership Type</label>
+        <select name="role" class="filter-select">
+            <option value="">-- Select Membership Type --</option>
+            {% for role in roles %}
+                <option value="{{ role }}" {% if selected_role == role %}selected{% endif %}>
+                    {{ role }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <!-- Active Month -->
+        <label>Active Month</label>
+        <select name="circulation_month" class="filter-select">
+            <option value="">-- Select Month --</option>
+            {% for month in circulation_months %}
+                <option value="{{ month }}" {% if selected_circulation_month == month %}selected{% endif %}>
+                    {{ month }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <!-- Home Library -->
+        <label>Library</label>
+        <select name="home_library" class="filter-select">
+            <option value="">-- Select Library --</option>
+            {% for lib in home_libraries %}
+                <option value="{{ lib }}" {% if selected_home_library == lib %}selected{% endif %}>
+                    {{ lib }}
+                </option>
+            {% endfor %}
+        </select>
+
+       <!-- Buttons -->
+       <button type="submit" class="filter-button">Apply</button>
+       <button type="button" class="filter-button" onclick="window.location='{{ url_for('patron_list') }}'" style="margin-left:-5px;">Clear</button>
+    </form>
+</div>
+
+<!-- Patron Table -->
+<table>
+    <thead>
+        <tr>
+            <th>
+                <a href="{{ url_for('patron_list', sort='_id', order=1 if sort_field != '_id' or sort_order==-1 else -1,
+                    age_group=selected_age_group,
+                    role=selected_role,
+                    circulation_month=selected_circulation_month,
+                    home_library=selected_home_library,
+                    q=query,
+                    patron_id=patron_id_search
+                ) }}">
+                    Patron ID {% if sort_field=='_id' %}{{ '▲' if sort_order==1 else '▼' }}{% endif %}
+                </a>
+            </th>
+            <th>Type Code</th>
+            <th>Age Group</th>
+            <th>Membership Type</th>
+            <th>
+                <a href="{{ url_for('patron_list', sort='checkout_total', order=1 if sort_field != 'checkout_total' or sort_order==-1 else -1,
+                    age_group=selected_age_group,
+                    role=selected_role,
+                    circulation_month=selected_circulation_month,
+                    home_library=selected_home_library,
+                    q=query
+                ) }}">
+                    Checkout Total {% if sort_field=='checkout_total' %}{{ '▲' if sort_order==1 else '▼' }}{% endif %}
+                </a>
+            </th>
+            <th>
+                <a href="{{ url_for('patron_list', sort='renewal_total', order=1 if sort_field != 'renewal_total' or sort_order==-1 else -1,
+                    age_group=selected_age_group,
+                    role=selected_role,
+                    circulation_month=selected_circulation_month,
+                    home_library=selected_home_library,
+                    q=query
+                ) }}">
+                    Renewal Total {% if sort_field=='renewal_total' %}{{ '▲' if sort_order==1 else '▼' }}{% endif %}
+                </a>
+            </th>
+            <th>Library</th>
+            <th>Profile</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for patron in rows %}
+        <tr>
+            <td>{{ patron.short_id }}</td>
+            <td>{{ patron.patron_type_code }}</td>
+            <td>{{ patron.age_group }}</td>
+            <td>{{ patron.role_name }}</td>
+            <td>{{ patron.checkout_total }}</td>
+            <td>{{ patron.renewal_total }}</td>
+            <td>{{ patron.home_library_definition }}</td>
+            <!-- Profile link using short_id -->
+            <td><a href="{{ url_for('patron_profile', short_id=patron.short_id) }}">View Profile</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for('patron_list', page=page-1,
+            age_group=selected_age_group,
+            role=selected_role,
+            circulation_month=selected_circulation_month,
+            home_library=selected_home_library,
+            q=query,
+            patron_id=patron_id_search,
+            sort=sort_field,
+            order=sort_order
+        ) }}">Previous</a>
+    {% endif %}
+
+    <span>Page {{ page }} of {{ total_pages }}</span>
+
+    {% if page < total_pages %}
+        <a href="{{ url_for('patron_list', page=page+1,
+            age_group=selected_age_group,
+            role=selected_role,
+            circulation_month=selected_circulation_month,
+            home_library=selected_home_library,
+            q=query,
+            patron_id=patron_id_search,
+            sort=sort_field,
+            order=sort_order
+        ) }}">Next</a>
+    {% endif %}
+
+    {% if page > 1 %}
+    <div class="back-home" style="margin: 20px 0;">
+        <a href="{{ url_for('patron_list', page=1,
+            age_group=selected_age_group,
+            role=selected_role,
+            circulation_month=selected_circulation_month,
+            home_library=selected_home_library,
+            q=query,
+            patron_id=patron_id_search
+        ) }}">← Back to First Page</a>
+    </div>
+    {% endif %}
+</div>
+
+{% if patron_id_search %}
+<div class="back-home" style="text-align: center; margin: 20px 0;">
+    <a href="{{ url_for('patron_list', page=1) }}">← Back to Home Page</a>
+</div>
+{% endif %}
+
+</body>
+</html>
