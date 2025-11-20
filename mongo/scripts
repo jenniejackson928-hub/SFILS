@@ -1,0 +1,8 @@
+// Check all unique age ranges in the collection
+db.Patron.distinct("age_range")
+
+// Check number of patrons are in each age group
+db.Patron.aggregate([
+  { $group: { _id: "$age_group", count: { $sum: 1 } } },
+  { $sort: { count: -1 } }
+])
