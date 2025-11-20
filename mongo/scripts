@@ -1,0 +1,17 @@
+db.Patron.aggregate([
+  { 
+    $group: { 
+      _id: { 
+        patron_type_code: "$patron_type_code",
+        patron_type_definition: "$patron_type_definition"
+      }
+    } 
+  },
+  { $sort: { "_id.patron_type_code": 1 } }
+])
+
+// Count how many patrons per membership type
+db.Patron.aggregate([
+  { $group: { _id: "$role_name", count: { $sum: 1 } } },
+  { $sort: { count: -1 } }
+])
