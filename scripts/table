@@ -1,0 +1,23 @@
+CREATE TABLE `sfpl_datasf_library` (
+  `patron_type_code` varchar(50) DEFAULT NULL,
+  `Patron Type Definition` text,
+  `Total Checkout` int DEFAULT NULL,
+  `Total Renewals` int DEFAULT NULL,
+  `Age Range` text,
+  `home_library_code` varchar(50) DEFAULT NULL,
+  `Home Library Definition` text,
+  `Circulation Active Month` text,
+  `notification_preference_code` varchar(50) DEFAULT NULL,
+  `Notification Code Definition` text,
+  `Provided Email Address` text,
+  `Within San Francisco County` text,
+  `Year Patron Registered` int DEFAULT NULL,
+  `patron_id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`patron_id`),
+  KEY `fk_patron_type_code` (`patron_type_code`),
+  KEY `fk_notification_preference_code` (`notification_preference_code`),
+  KEY `fk_home_library_code` (`home_library_code`),
+  CONSTRAINT `fk_home_library_code` FOREIGN KEY (`home_library_code`) REFERENCES `library_info` (`library_id`),
+  CONSTRAINT `fk_notification_preference_code` FOREIGN KEY (`notification_preference_code`) REFERENCES `notification_info` (`notification_id`),
+  CONSTRAINT `fk_patron_type_code` FOREIGN KEY (`patron_type_code`) REFERENCES `patron` (`patron_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=437114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
